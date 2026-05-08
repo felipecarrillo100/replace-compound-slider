@@ -52,6 +52,10 @@ export default function App() {
   const [timeRange, setTimeRange] = useState([480, 1020]); // 08:00 – 17:00
   const [disabled] = useState([35, 65]);
   const [fiveHandles, setFiveHandles] = useState([10, 25, 50, 75, 90]);
+  // Live updates demo — onUpdate fires every tick, onChange fires on release
+  const [liveValue, setLiveValue] = useState([35]);
+  const [committedValue, setCommittedValue] = useState([35]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const isDark = theme === 'dark';
 
@@ -791,6 +795,73 @@ const toTime = (mins) => {
       ))
     }
   </Tracks>
+</Slider>`}</CodeSnippet>
+        </section>
+
+        {/* Live Updates */}
+        <section className="demo-card">
+          <div className="card-header">
+            <h2 className="card-title">Live Updates</h2>
+            <span className="card-badge mode">onUpdate vs onChange</span>
+          </div>
+          <p className="card-description">
+            <code>onUpdate</code> fires on <strong>every drag tick</strong> — ideal for live
+            previews. <code>onChange</code> fires only on <strong>release</strong> — ideal for
+            committing the final value. Use both together to show a live preview while
+            only writing to state on release.
+          </p>
+          <div className="value-display">
+            <span className={`value-chip${isDragging ? ' active' : ''}`}>
+              {isDragging ? '🟢' : '⚪'} live (onUpdate): {liveValue[0]}
+            </span>
+            <span className="value-chip">
+              ✅ committed (onChange): {committedValue[0]}
+            </span>
+          </div>
+          <div className="slider-container">
+            <Slider
+              domain={DOMAIN_100}
+              values={committedValue}
+              step={1}
+              onUpdate={v => { setLiveValue([...v]); setIsDragging(true); }}
+              onChange={v => { setCommittedValue([...v]); setLiveValue([...v]); setIsDragging(false); }}
+              rootStyle={{ position: 'relative', width: '100%', height: 36 }}
+            >
+              <Rail>
+                {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
+              </Rail>
+              <Handles>
+                {({ handles, getHandleProps, activeHandleID }) => (
+                  <>
+                    {handles.map(h => (
+                      <Handle
+                        key={h.id}
+                        handle={h}
+                        domain={DOMAIN_100}
+                        getHandleProps={getHandleProps}
+                        activeHandleID={activeHandleID}
+                      />
+                    ))}
+                  </>
+                )}
+              </Handles>
+              <Tracks right={false}>
+                {({ tracks, getTrackProps }) => (
+                  <>
+                    {tracks.map(({ id, source, target }) => (
+                      <Track key={id} source={source} target={target} getTrackProps={getTrackProps} />
+                    ))}
+                  </>
+                )}
+              </Tracks>
+            </Slider>
+          </div>
+          <CodeSnippet>{`<Slider
+  domain={[0, 100]} values={[${committedValue[0]}]} step={1}
+  onUpdate={v => setLiveValue(v)}   // fires every drag tick
+  onChange={v => setCommitted(v)}   // fires only on release
+>
+  ...
 </Slider>`}</CodeSnippet>
         </section>
 
