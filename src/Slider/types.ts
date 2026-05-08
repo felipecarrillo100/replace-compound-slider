@@ -3,96 +3,133 @@ import { LinearScale } from '../scales/LinearScale';
 import { DiscreteScale } from '../scales/DiscreteScale';
 import { HandleItem, CustomMode } from '../types';
 
+/**
+ * The type of the ref forwarded by `<Slider>`.
+ * Points directly to the underlying root DOM element.
+ * @public
+ */
 export type SliderHandle = HTMLDivElement;
 
+/**
+ * Props for the `<Slider>` component.
+ * @public
+ */
 export interface SliderProps {
   /**
-   * String component used for slider root. Defaults to 'div'.
+   * The HTML or SVG tag name to use for the slider root element. Defaults to `'div'`.
+   * Use `'svg'` together with `flatten` for SVG sliders.
+   * @defaultValue 'div'
    */
   component?: keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap;
   /**
-   * An object with any inline styles you want applied to the root element.
+   * Inline styles applied to the root element.
+   * Tip: at minimum, set `position: 'relative'` and a fixed height.
    */
   rootStyle?: any;
   /**
-   * An object with any props you want applied to the root element.
+   * Additional props spread onto the root element (e.g. `aria-label`, `data-testid`).
    */
   rootProps?: { [key: string]: any };
   /**
-   * CSS class name applied to the root element of the slider.
+   * CSS class name applied to the root element.
    */
   className?: string;
   /**
-   * Two element array of numbers providing the min and max values for the slider [min, max] e.g. [0, 100].
-   * It does not matter if the slider is reversed on the screen, domain is always [min, max] with min < max.
+   * A two-element `[min, max]` tuple defining the numeric domain of the slider.
+   * The min value must always be smaller than max regardless of the `reversed` prop.
+   * @defaultValue [0, 100]
    */
   domain?: ReadonlyArray<number>;
   /**
-   * An array of numbers. You can supply one for a value slider, two for a range slider or more to create n-handled sliders.
-   * The values should correspond to valid step values in the domain.
-   * The numbers will be forced into the domain if they are two small or large.
+   * An array of initial (or controlled) handle values.
+   * - One value → single-thumb value slider
+   * - Two values → range slider
+   * - Three or more → multi-handle slider
+   *
+   * Values outside the domain are clamped to the nearest valid step.
    */
   values: ReadonlyArray<number>;
   /**
-   * The step value for the slider.
+   * The increment between discrete step positions.
+   * Fractional steps (e.g. `0.5`) are supported.
+   * @defaultValue 0.1
    */
   step?: number;
   /**
-   * The interaction mode. Value of 1 will allow handles to cross each other.
-   * Value of 2 will keep the sliders from crossing and separated by a step.
-   * Value of 3 will make the handles pushable and keep them a step apart.
-   * ADVANCED: You can also supply a function that will be passed the current values and the incoming update.
-   * Your function should return what the state should be set as.
+   * The interaction mode controlling how multiple handles behave relative to each other.
+   *
+   * | Mode | Behaviour |
+   * |------|-----------|
+   * | `1`  | **Crossing** – handles can move freely past each other |
+   * | `2`  | **Non-crossing** – handles are blocked from crossing (default range behaviour) |
+   * | `3`  | **Pushable** – dragging one handle pushes adjacent ones |
+   * | `CustomMode` | Supply your own function for full control |
+   *
+   * @defaultValue 1
    */
   mode?: 1 | 2 | 3 | CustomMode;
   /**
-   * Set to true if the slider is displayed vertically to tell the slider to use the height to calculate positions.
+   * Set to `true` to render a vertical slider.
+   * The slider will use its height instead of width for position calculations.
+   * @defaultValue false
    */
   vertical?: boolean;
   /**
-   * Reverse the display of slider values.
+   * Reverses the direction of the slider so that the minimum value is on the right
+   * (or bottom for vertical sliders).
+   * @defaultValue false
    */
   reversed?: boolean;
   /**
-   * Function triggered when the value of the slider has changed. This will recieve changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values.
+   * Called at the end of every slide interaction and on rail/track clicks.
+   * Receives the final committed array of values.
    */
   onChange?: (values: ReadonlyArray<number>) => void;
   /**
-   * Function called with the values at each update (caution: high-volume updates when dragging). Receives values.
+   * Called continuously during a drag with the current (in-progress) values.
+   * This fires at high frequency — avoid expensive operations here.
    */
   onUpdate?: (values: ReadonlyArray<number>) => void;
   /**
-   * Function triggered with ontouchstart or onmousedown on a handle. Receives values.
+   * Called when a drag interaction begins (`mousedown` / `touchstart` on a handle).
    */
   onSlideStart?: (
     values: ReadonlyArray<number>,
     data: { activeHandleID: string }
   ) => void;
   /**
-   * Function triggered on ontouchend or onmouseup on a handle. Receives values.
+   * Called when a drag interaction ends (`mouseup` / `touchend`).
    */
   onSlideEnd?: (
     values: ReadonlyArray<number>,
     data: { activeHandleID: string }
   ) => void;
   /**
-   * Ignore all mouse, touch and keyboard events.
+   * When `true`, all mouse, touch, and keyboard interactions are suppressed.
+   * @defaultValue false
    */
   disabled?: boolean;
   /**
-   * Render slider children as siblings. This is primarily for SVG sliders. See the SVG example.
+   * Renders the slider's child components as siblings of the root element rather than children.
+   * Required for SVG sliders where nesting `<div>` inside `<svg>` is invalid.
+   * @defaultValue false
    */
   flatten?: boolean;
   /**
-   * When true, the slider will warn if values are changed to fit domain and step values.  Defaults to false.
+   * When `true`, warns in the browser console if handle values are adjusted to fit the domain or step.
+   * @defaultValue false
    */
   warnOnChanges?: boolean;
   /**
-   * Component children to render.
+   * The slider's child components — typically `<Rail>`, `<Handles>`, `<Tracks>`, and `<Ticks>`.
    */
   children?: React.ReactNode;
 }
 
+/**
+ * Internal state shape for the Slider component.
+ * @internal
+ */
 export interface SliderState {
   step?: number | null;
   values: ReadonlyArray<number> | null;

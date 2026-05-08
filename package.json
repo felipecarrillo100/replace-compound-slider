@@ -1,6 +1,6 @@
 {
   "name": "replace-compound-slider",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Modernized fork of react-compound-slider. High-performance, lightweight, and accessible slider components for React 18 & 19.",
   "engines": {
     "node": ">=18.0.0"
@@ -25,7 +25,11 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "prettier --check \"src/**/*.{ts,tsx}\"",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "docs": "typedoc",
+    "demo:dev": "npm run build && npm run dev --prefix demo",
+    "demo:watch": "concurrently \"npm run dev\" \"npm run dev --prefix demo\"",
+    "demo:build": "npm run build && npm run build --prefix demo"
   },
   "peerDependencies": {
     "react": ">=16.9.0",
@@ -38,6 +42,7 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "typedoc": "^0.28.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@types/d3-array": "^3.0.10",

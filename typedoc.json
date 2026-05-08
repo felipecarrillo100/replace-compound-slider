@@ -1,0 +1,22 @@
+{
+  "entryPoints": [
+    "src/index.ts",
+    "src/Slider/types.ts",
+    "src/Rail/types.ts",
+    "src/Handles/types.ts",
+    "src/Tracks/types.ts",
+    "src/Ticks/types.ts",
+    "src/types.ts"
+  ],
+  "entryPointStrategy": "resolve",
+  "out": "docs",
+  "cleanOutputDir": false,
+  "name": "replace-compound-slider API",
+  "includeVersion": true,
+  "excludeInternal": true,
+  "readme": "README.md",
+  "skipErrorChecking": true,
+  "exclude": ["src/**/*.spec.*", "src/setupTests.ts"],
+  "highlightLanguages": ["typescript", "tsx", "javascript", "jsx", "bash", "diff", "json"],
+  "treatWarningsAsErrors": false
+}

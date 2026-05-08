@@ -5,6 +5,10 @@
 
 # Replace Compound Slider
 
+🎮 [Try the Live Demo](https://felipecarrillo100.github.io/replace-compound-slider/demo/) — Range, vertical, pushable, time-of-day and more.
+
+📚 [View the API Documentation](https://felipecarrillo100.github.io/replace-compound-slider/)
+
 > [!IMPORTANT]
 > This is a modernized fork of the excellent [React Compound Slider](https://github.com/sghall/react-compound-slider) by **Steve Hall**. We have created this fork because the original library is no longer maintained, and we rely on it for our existing production projects. Our goal is to keep this library alive, secure, and compatible with the latest versions of React.
 

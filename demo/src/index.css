@@ -1,0 +1,588 @@
+/* ===================================================================
+   replace-compound-slider — Demo Styles
+   Theme system: CSS custom properties + data-theme attribute
+   Default: dark. Respects prefers-color-scheme. Override with data-theme.
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-page:        #0d1117;
+  --bg-card:        #161b22;
+  --bg-card-hover:  #1c2128;
+  --bg-code:        #0d1117;
+  --bg-badge:       #1f2937;
+
+  /* Text */
+  --text-primary:   #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted:     #6e7681;
+  --text-code:      #79c0ff;
+
+  /* Borders */
+  --border:         #30363d;
+  --border-subtle:  #21262d;
+
+  /* Slider accent colours — inspired by original react-compound-slider #9BBFD4 / #607E9E */
+  --accent-rail:    #21262d;
+  --accent-track:   #6e94b4;
+  --accent-handle:  #9bbfd4;
+  --accent-handle-active: #c0dff0;
+  --accent-handle-disabled: #4a5568;
+  --accent-track-disabled:  #374151;
+  --accent-tick:    #4b5563;
+  --accent-tick-label: #8b949e;
+
+  /* Theme toggle button */
+  --toggle-bg:      #21262d;
+  --toggle-border:  #30363d;
+  --toggle-icon:    #c9d1d9;
+
+  /* Glow effect */
+  --glow-color:     rgba(155, 191, 212, 0.15);
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-page:        #f6f8fa;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f0f3f6;
+  --bg-code:        #f6f8fa;
+  --bg-badge:       #eef1f4;
+
+  /* Text */
+  --text-primary:   #1f2328;
+  --text-secondary: #57606a;
+  --text-muted:     #6e7781;
+  --text-code:      #0550ae;
+
+  /* Borders */
+  --border:         #d0d7de;
+  --border-subtle:  #e8ebef;
+
+  /* Slider accents — same palette, lighter bg makes them pop differently */
+  --accent-rail:    #d0d7de;
+  --accent-track:   #4a7a9b;
+  --accent-handle:  #607e9e;
+  --accent-handle-active: #3d6082;
+  --accent-handle-disabled: #9ca3af;
+  --accent-track-disabled:  #d1d5db;
+  --accent-tick:    #9ca3af;
+  --accent-tick-label: #6b7280;
+
+  /* Theme toggle button */
+  --toggle-bg:      #f6f8fa;
+  --toggle-border:  #d0d7de;
+  --toggle-icon:    #57606a;
+
+  /* Glow effect */
+  --glow-color:     rgba(74, 122, 155, 0.1);
+  --shadow-card:    0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ── Layout ────────────────────────────────────────────────────── */
+.demo-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 0 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.demo-header-left { flex: 1; min-width: 260px; }
+
+.demo-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.demo-title span {
+  background: linear-gradient(135deg, var(--accent-handle) 0%, var(--accent-track) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.demo-subtitle {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.demo-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.demo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-badge);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.demo-link:hover {
+  border-color: var(--accent-handle);
+  color: var(--accent-handle);
+  background: var(--bg-card);
+}
+
+/* ── Theme Toggle ──────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: var(--toggle-icon);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-handle);
+}
+
+.theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover svg { transform: rotate(20deg); }
+
+/* ── Gallery Grid ──────────────────────────────────────────────── */
+.demo-gallery {
+  display: grid;
+  gap: 24px;
+}
+
+/* ── Card ───────────────────────────────────────────────────────── */
+.demo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px 32px 28px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.25s;
+}
+
+.demo-card:hover {
+  border-color: var(--accent-track);
+  box-shadow: var(--shadow-card), 0 0 0 1px var(--glow-color);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.card-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  background: var(--bg-badge);
+  white-space: nowrap;
+}
+
+.card-badge.mode { border-color: var(--accent-track); color: var(--accent-track); }
+.card-badge.vertical { border-color: #a78bfa; color: #a78bfa; }
+.card-badge.disabled { border-color: var(--accent-tick); color: var(--accent-tick); }
+
+.card-description {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* ── Value Display ─────────────────────────────────────────────── */
+.value-display {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.value-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  color: var(--text-code);
+  transition: border-color 0.15s;
+}
+
+.value-chip.active {
+  border-color: var(--accent-handle);
+  background: var(--glow-color);
+}
+
+/* ── Slider Container ──────────────────────────────────────────── */
+.slider-container {
+  position: relative;
+  width: 100%;
+  padding: 24px 0;
+}
+
+.slider-root {
+  position: relative;
+  width: 100%;
+  height: 36px;
+}
+
+/* Vertical sliders */
+.slider-container.vertical {
+  display: flex;
+  justify-content: center;
+  height: 220px;
+  padding: 0 24px;
+}
+
+.slider-root.vertical {
+  height: 200px;
+  width: 36px;
+}
+
+/* ── Rail ──────────────────────────────────────────────────────── */
+.rail-outer {
+  position: absolute;
+  width: 100%;
+  height: 36px;
+  transform: translateY(-50%);
+  top: 50%;
+  border-radius: 7px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.rail-inner {
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  transform: translateY(-50%);
+  top: 50%;
+  border-radius: 7px;
+  pointer-events: none;
+  background-color: var(--accent-rail);
+  transition: background-color 0.25s;
+}
+
+/* Vertical rail */
+.rail-outer.vertical {
+  width: 36px;
+  height: 100%;
+  transform: translateX(-50%);
+  top: 0;
+  left: 50%;
+}
+
+.rail-inner.vertical {
+  width: 8px;
+  height: 100%;
+  transform: translateX(-50%);
+  top: 0;
+  left: 50%;
+}
+
+/* ── Track ─────────────────────────────────────────────────────── */
+.track {
+  position: absolute;
+  height: 8px;
+  transform: translateY(-50%);
+  top: 50%;
+  border-radius: 7px;
+  cursor: pointer;
+  background-color: var(--accent-track);
+  z-index: 1;
+  transition: background-color 0.25s;
+}
+
+.track.disabled { background-color: var(--accent-track-disabled); }
+
+.track.vertical {
+  width: 8px;
+  height: auto;
+  transform: translateX(-50%);
+  left: 50%;
+  top: auto;
+  border-radius: 7px;
+}
+
+/* ── Handle ────────────────────────────────────────────────────── */
+.handle-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  z-index: 5;
+  width: 28px;
+  height: 36px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.handle-wrapper:active { cursor: grabbing; }
+
+.handle-wrapper.vertical {
+  top: auto;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.handle-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--accent-handle);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 2px var(--accent-handle), 0 2px 8px rgba(0,0,0,0.3);
+  transition: background-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  pointer-events: none;
+}
+
+.handle-wrapper:hover .handle-dot,
+.handle-wrapper:focus .handle-dot {
+  background-color: var(--accent-handle-active);
+  box-shadow: 0 0 0 3px var(--accent-handle), 0 4px 16px rgba(155, 191, 212, 0.3);
+  transform: scale(1.15);
+}
+
+.handle-wrapper.active .handle-dot {
+  background-color: var(--accent-handle-active);
+  box-shadow: 0 0 0 3px var(--accent-handle-active), 0 4px 16px rgba(155, 191, 212, 0.4);
+  transform: scale(1.2);
+}
+
+.handle-wrapper.disabled .handle-dot {
+  background-color: var(--accent-handle-disabled);
+  box-shadow: 0 0 0 2px var(--accent-handle-disabled);
+  cursor: not-allowed;
+}
+
+/* handle tooltip */
+.handle-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--accent-handle);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.handle-wrapper:hover .handle-tooltip,
+.handle-wrapper:focus .handle-tooltip,
+.handle-wrapper.active .handle-tooltip {
+  opacity: 1;
+}
+
+/* ── Ticks ──────────────────────────────────────────────────────── */
+.tick-mark {
+  position: absolute;
+  width: 1px;
+  height: 6px;
+  background-color: var(--accent-tick);
+  top: calc(50% + 8px);
+  transform: translateX(-50%);
+  transition: background-color 0.25s;
+}
+
+.tick-label {
+  position: absolute;
+  top: calc(50% + 16px);
+  font-size: 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-tick-label);
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+
+/* vertical ticks */
+.tick-mark.vertical {
+  width: 6px;
+  height: 1px;
+  left: calc(50% + 8px);
+  top: auto;
+  transform: translateY(50%);
+}
+
+.tick-label.vertical {
+  left: calc(50% + 16px);
+  top: auto;
+  transform: translateY(50%);
+}
+
+/* ── Two-column layout for vertical slider card ─────────────────── */
+.vertical-card-body {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.vertical-card-body .slider-container.vertical {
+  flex-shrink: 0;
+}
+
+.vertical-card-info {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+/* ── DateTime Slider ─────────────────────────────────────────────── */
+.date-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-code);
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: 28px;
+}
+
+/* ── Code Snippet ─────────────────────────────────────────────────── */
+.code-block {
+  background: var(--bg-code);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.code-block .kw  { color: #f97583; }
+.code-block .str { color: #9ecbff; }
+.code-block .num { color: #79c0ff; }
+.code-block .cm  { color: #6a737d; }
+.code-block .tag { color: #85e89d; }
+.code-block .attr{ color: #b392f0; }
+
+[data-theme="light"] .code-block .kw  { color: #d73a49; }
+[data-theme="light"] .code-block .str { color: #032f62; }
+[data-theme="light"] .code-block .num { color: #005cc5; }
+[data-theme="light"] .code-block .cm  { color: #6a737d; }
+[data-theme="light"] .code-block .tag { color: #22863a; }
+[data-theme="light"] .code-block .attr{ color: #6f42c1; }
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.demo-footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.demo-footer a {
+  color: var(--accent-handle);
+  text-decoration: none;
+}
+
+.demo-footer a:hover { text-decoration: underline; }
+
+/* ── Transitions for theme switch ──────────────────────────────── */
+.demo-card,
+.rail-inner,
+.track,
+.handle-dot,
+.tick-mark,
+.tick-label,
+.value-chip {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .demo-wrapper { padding: 0 16px 60px; }
+  .demo-card { padding: 20px 16px 18px; }
+  .demo-header { flex-direction: column; align-items: flex-start; }
+}
