@@ -121,6 +121,7 @@ export default function App() {
   const [logValue, setLogValue] = useState([50]);
   const [shifterValue, setShifterValue] = useState([40, 60]);
   const [shifterSkin, setShifterSkin] = useState<'default' | 'ios' | 'cyberpunk' | 'material' | 'bootstrap'>('default');
+  const [mobileValue, setMobileValue] = useState([50]);
 
   return (
     <div className="demo-wrapper">
@@ -324,6 +325,23 @@ export default function App() {
         <SectionHeader title="Styling Gallery" level="Level 4" num={4} />
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px' }}>
+          <Card 
+            title="Mobile Optimized" 
+            description="Best-in-class mobile experience." 
+            hint="Uses 44px touch targets, scaling handles, and large tooltips." 
+            badge="Mobile First"
+            values={[{ value: mobileValue[0] }]} 
+            snippet={`.skin-mobile .handle-wrapper {\n  width: 44px; height: 44px;\n}\n.skin-mobile .handle-wrapper:active .handle-dot {\n  transform: scale(1.2);\n}`}
+          >
+            <div className="skin-mobile">
+              <Slider domain={DOMAIN_100} values={mobileValue} onChange={v => setMobileValue([...v])} rootStyle={{ position: 'relative', width: '100%', height: 40 }}>
+                <Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail>
+                <Handles>{({ handles, getHandleProps }) => <>{handles.map(h => <Handle key={h.id} handle={h} domain={DOMAIN_100} getHandleProps={getHandleProps} />)}</>}</Handles>
+                <Tracks right={false}>{({ tracks, getTrackProps }) => <>{tracks.map(({ id, source, target }) => <Track key={id} source={source} target={target} getTrackProps={getTrackProps} />)}</>}</Tracks>
+              </Slider>
+            </div>
+          </Card>
+
           <Card title="iOS Minimal" description="Soft shadows and thin rails." hint="2px rails and 28px white handles." values={[{ value: 50 }]} snippet={`.skin-ios .handle-dot {\n  width: 28px; height: 28px; background: #fff;\n  box-shadow: 0 3px 8px rgba(0,0,0,0.15);\n}`}>
             <div className="skin-ios"><Slider domain={DOMAIN_100} values={[50]} rootStyle={{ position: 'relative', width: '100%', height: 40 }}><Rail>{({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}</Rail><Handles>{({ handles, getHandleProps }) => <>{handles.map(h => <Handle key={h.id} handle={h} domain={DOMAIN_100} getHandleProps={getHandleProps} />)}</>}</Handles><Tracks right={false}>{({ tracks, getTrackProps }) => <>{tracks.map(({ id, source, target }) => <Track key={id} source={source} target={target} getTrackProps={getTrackProps} />)}</>}</Tracks></Slider></div>
           </Card>

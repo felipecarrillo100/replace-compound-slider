@@ -221,6 +221,7 @@ export const Slider = forwardRef<SliderHandle, SliderProps>(
     const onTouchMoveLogic = useRef<(e: TouchEvent) => void>(() => {});
     onTouchMoveLogic.current = (e: TouchEvent) => {
       if (isNotValidTouch(e)) return;
+      e.preventDefault?.(); // Prevent page scrolling during drag
       const updateValue = getPixelValue(e, true);
       setState(prev => {
         const nextHandles = getUpdatedHandles(prev.handles, activeHandleID, updateValue, reversed);
@@ -260,7 +261,7 @@ export const Slider = forwardRef<SliderHandle, SliderProps>(
 
     const addTouchEvents = useCallback(() => {
       if (isBrowser) {
-        document.addEventListener('touchmove', stableTouchMove.current);
+        document.addEventListener('touchmove', stableTouchMove.current, { passive: false });
         document.addEventListener('touchend',  stableTouchEnd.current);
       }
     }, []);
