@@ -20,6 +20,7 @@ Welcome to the future. **Replace Compound Slider** is a fully modernized, high-p
 
 ### Modernization Highlights
 - **React 18 & 19 Support**: Fully refactored to Functional Components and Hooks.
+- **Zero Dependencies**: Pure React logic with no runtime dependencies.
 - **Zero Vulnerabilities**: All legacy security issues and outdated dependencies have been resolved.
 - **Fast Tooling**: Powered by **tsup** (esbuild) and **Vitest** for lightning-fast builds and tests.
 - **TypeScript First**: 100% type-safe with modern TypeScript 6.0 patterns.
@@ -63,7 +64,8 @@ This library aims to be a stable platform for creating slider components with a 
 
 ### Slider Features
 
-- **Small size**: Minimal runtime impact.
+- **Zero Dependencies**: Pure React logic with no runtime impact.
+- **Small size**: Minimal bundle footprint.
 - **Markup Agnostic**: Makes no assumptions about your markup.
 - **SVG Support**: Supports SVG sliders out of the box.
 - **Modern TypeScript**: Full type safety for all components.

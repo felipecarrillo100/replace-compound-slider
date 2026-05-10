@@ -1,6 +1,6 @@
 {
   "name": "replace-compound-slider",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Modernized fork of react-compound-slider. High-performance, lightweight, and accessible slider components for React 18 & 19.",
   "engines": {
     "node": ">=18.0.0"
@@ -45,11 +45,9 @@
     "typedoc": "^0.28.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
-    "@types/d3-array": "^3.0.10",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
-    "@types/warning": "^3.0.3",
     "jsdom": "^24.0.0",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
@@ -57,9 +55,5 @@
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
-  },
-  "dependencies": {
-    "d3-array": "^3.2.4",
-    "warning": "^4.0.3"
   }
 }

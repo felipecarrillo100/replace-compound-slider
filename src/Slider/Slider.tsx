@@ -8,7 +8,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import warning from 'warning';
+import { warning } from '../utils';
 import { mode1, mode2, mode3 } from './modes';
 import {
   isNotValidTouch,

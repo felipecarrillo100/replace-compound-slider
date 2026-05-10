@@ -1,5 +1,5 @@
 import React from 'react';
-import warning from 'warning';
+import { warning } from '../utils';
 
 import { DiscreteScale } from '../scales/DiscreteScale';
 import { HandleItem } from '../types';

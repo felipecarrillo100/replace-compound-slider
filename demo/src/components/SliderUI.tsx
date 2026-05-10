@@ -102,35 +102,25 @@ export const Track: React.FC<TrackProps> = ({
 // ── Tick ──────────────────────────────────────────────────────────
 interface TickProps {
   tick: SliderItem;
-  count: number;
   format?: (v: number) => string;
   vertical?: boolean;
 }
 
 export const Tick: React.FC<TickProps> = ({
   tick,
-  count,
   format = (v) => String(v),
   vertical = false,
 }) => {
-  const posStyle = vertical
+  const style = vertical
     ? { bottom: `${tick.percent}%` }
     : { left: `${tick.percent}%` };
 
-  const labelStyle = vertical
-    ? { bottom: `${tick.percent}%` }
-    : {
-        left: `${tick.percent}%`,
-        width: `${100 / count}%`,
-        marginLeft: `${-(100 / count) / 2}%`,
-      };
-
   return (
-    <>
-      <div className={`tick-mark${vertical ? ' vertical' : ''}`} style={posStyle} />
-      <div className={`tick-label${vertical ? ' vertical' : ''}`} style={labelStyle}>
+    <div className={`tick-wrapper${vertical ? ' vertical' : ''}`} style={style}>
+      <div className="tick-mark" />
+      <div className="tick-label">
         {format(tick.value)}
       </div>
-    </>
+    </div>
   );
 };
